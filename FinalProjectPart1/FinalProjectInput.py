@@ -34,7 +34,7 @@ class ServiceDate:
 
 # Adding functions to sort information easily
 def get_manufacturer(item):
-    return (item.manufacturer)
+    return item.manufacturer
 
 
 if __name__ == '__main__':
@@ -104,8 +104,11 @@ if __name__ == '__main__':
             found = []  # creates an empty dictionary that will store items if found
             for item in items:
                 # checks if the item meets the required criteria
-                if item.manufacturer.strip().lower() == manufacturer_assigned and item.item_type.strip().lower() == item_type_assigned and not item.damaged and datetime.strptime(
-                        item.service_date, '%m/%d/%Y').date() >= datetime.now().date():
+                if (
+                        item.manufacturer.strip().lower() == manufacturer_assigned and
+                        item.item_type.strip().lower() == item_type_assigned and
+                        not item.damaged and
+                        datetime.strptime(item.service_date, '%m/%d/%Y').date() >= datetime.now().date()):
                     found.append(item)
 
             if len(found) == 0:
@@ -115,20 +118,25 @@ if __name__ == '__main__':
                 max_price = 0
                 max_item = None
                 for item in found:
-                    if float(item.price) > float(max_price) and datetime.strptime(item.service_date,
-                                                                                  '%m/%d/%Y').date() >= datetime.now().date() and not item.damaged:
+                    if (
+                            float(item.price) > float(max_price) and
+                            datetime.strptime(item.service_date, '%m/%d/%Y').date() >= datetime.now().date() and
+                            not item.damaged):
                         max_price = item.price
                         max_item = item
                 if max_item is None:
                     print("No such item in inventory")  # prints if there's no such item found
                 else:  # prints if it meets the search criteria
-                    print(
-                        f"Your item is: {max_item.item_id}, {max_item.manufacturer.strip()}, {max_item.item_type}, {max_item.price}")
+                    print(f"Your item is: {max_item.item_id}, {max_item.manufacturer.strip()}, "
+                          f"{max_item.item_type}, {max_item.price}")
                 closestprice_diff = float("inf")  # assigns the closest price difference to positive infinity
                 closestprice_item = None  # initializes the closest price item to None
                 for item in items:
-                    if item.manufacturer.strip().lower() != manufacturer_assigned and item.item_type.strip().lower() == item_type_assigned and not item.damaged and datetime.strptime(
-                            item.service_date, '%m/%d/%Y').date() >= datetime.now().date():
+                    if (
+                            item.manufacturer.strip().lower() != manufacturer_assigned and
+                            item.item_type.strip().lower() == item_type_assigned and
+                            not item.damaged and
+                            datetime.strptime(item.service_date, '%m/%d/%Y').date() >= datetime.now().date()):
                         # assinges price diff to find the closest match
                         price_diff = abs(float(item.price) - float(max_item.price))
                         if price_diff < closestprice_diff:
@@ -137,7 +145,8 @@ if __name__ == '__main__':
                 if closestprice_item is not None:
                     # prints the information is the criteria is matched
                     print(
-                        f"You may also consider: {closestprice_item.item_id}, {closestprice_item.manufacturer.strip()}, {closestprice_item.item_type}, {closestprice_item.price}")
+                        f"You may also consider: {closestprice_item.item_id}, {closestprice_item.manufacturer.strip()}"
+                        f", {closestprice_item.item_type}, {closestprice_item.price}")
 
             elif len(found) == 1:
                 # prints information that is found
@@ -146,14 +155,19 @@ if __name__ == '__main__':
                     itemprice = item.price  # assings item price to the item in found list
                     closestprice_diff = float("inf")  # initializes the closest price difference to positive infinity
                     closestprice_item = None  # initializes the closest price item to None
-                    for item in items:
-                        if item.manufacturer.strip().lower() != manufacturer_assigned and item.item_type.strip().lower() == item_type_assigned and not item.damaged and datetime.strptime(
-                                item.service_date, '%m/%d/%Y').date() >= datetime.now().date():
+                    for another_item in items:
+                        if (
+                                another_item.manufacturer.strip().lower() != manufacturer_assigned and
+                                another_item.item_type.strip().lower() == item_type_assigned and
+                                not another_item.damaged and datetime.strptime(
+                                another_item.service_date, '%m/%d/%Y').date() >= datetime.now().date()):
                             price_diff = abs(float(item.price) - float(itemprice))
                             if price_diff < closestprice_diff:
                                 closestprice_diff = price_diff
-                                closestprice_item = item
+                                closestprice_item = another_item
                     if closestprice_item is not None:
                         # prints if closestprice_item is not empty
                         print(
-                            f"You may also consider: {closestprice_item.item_id}, {closestprice_item.manufacturer.strip()}, {closestprice_item.item_type}, {closestprice_item.price}")
+                            f"You may also consider: {closestprice_item.item_id}, "
+                            f"{closestprice_item.manufacturer.strip()}, "
+                            f"{closestprice_item.item_type}, {closestprice_item.price}")
